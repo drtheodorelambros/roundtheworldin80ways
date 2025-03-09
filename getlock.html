@@ -1,39 +1,85 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Capture GPS & Redirect</title>
-    <script>
-        function sendLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function (position) {
-                    let latitude = position.coords.latitude;
-                    let longitude = position.coords.longitude;
-                    let email = "notify.dr.lambros@gmail.com";  // Replace with your email
-                    let subject = "User GPS Location";
-                    let body = `User's Location:\nLatitude: ${latitude}\nLongitude: ${longitude}`;
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Insert GPS Coordinates into Smartsheet</title>
+  </head>
+  <body>
+    <h1>Insert GPS Coordinates into Smartsheet</h1>
+    <button id="getLocationBtn">Get GPS Coordinates and Insert Record</button>
 
-                    // Create mailto link
-                    let mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    <script>
+      // Event listener for the button click to trigger geolocation retrieval
+      document.getElementById("getLocationBtn").addEventListener("click", function() {
+        if ("geolocation" in navigator) {
+          navigator.geolocation.getCurrentPosition(
+            function(position) {
+              // Extract latitude and longitude from the geolocation API response
+              const latitude = position.coords.latitude;
+              const longitude = position.coords.longitude;
+              console.log("Latitude:", latitude, "Longitude:", longitude);
 
-                    // Open email client
-                    window.location.href = mailtoLink;
+              // Call the function to insert a new row into the Smartsheet grid
+              insertRecordIntoSmartsheet(latitude, longitude);
+            },
+            function(error) {
+              alert("Error getting location: " + error.message);
+            }
+          );
+        } else {
+          alert("Geolocation is not supported by this browser.");
+        }
+      });
 
-                    // Redirect after a short delay
-                    setTimeout(function () {
-                        window.location.href = "https://www.instagram.com/roundtheworldin80ways?igsh=MWJzeGE0MHppaXdnZw%3D%3D&utm_source=qr"; // Replace with your Instagram link
-                    }, 3000);
-                }, function (error) {
-                    alert("Error getting location: " + error.message);
-                });
-            } else {
-                alert("Geolocation is not supported by this browser.");
-            }
-        }
-    </script>
-</head>
-<body onload="sendLocation()">
-    <h1>Round the World in 80 Ways - forwarding to our Instagram...</h1>
-</body>
+      // Function to insert a record into Smartsheet using the Smartsheet API
+      function insertRecordIntoSmartsheet(lat, lng) {
+        // Replace with your actual Smartsheet API token and sheet ID
+        const apiToken = "5FQppMqXPGRcXHet0qrF8kpPid4Dt92dXBlIb";
+        const sheetId = "RoundTheWorldin80Ways_Main_Grid";
+
+        // Smartsheet API endpoint for adding rows
+        const url = `https://api.smartsheet.com/2.0/sheets/${sheetId}/rows`;
+
+        // Construct the row payload
+        // Replace the columnId values with the actual IDs from your Smartsheet
+        const newRow = {
+          toTop: true,  // Inserts the row at the top of the sheet
+          cells: [
+            {
+              columnId: GPS_Loc_X,  // Replace with your Latitude column ID
+              value: lat
+            },
+            {
+              columnId: GPS_Loc_Y,  // Replace with your Longitude column ID
+              value: lng
+            }
+          ]
+        };
+
+        // Make the API request using fetch
+        fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + apiToken
+          },
+          body: JSON.stringify({ rows: [newRow] })
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok: " + response.statusText);
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log("Success:", data);
+          alert("GPS coordinates inserted successfully!");
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          alert("Error inserting record: " + error.message);
+        });
+      }
+    </script>
+  </body>
 </html>
