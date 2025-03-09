@@ -34,7 +34,7 @@
       // Function to insert a record into Smartsheet using the Smartsheet API
       function insertRecordIntoSmartsheet(lat, lng) {
         // Replace with your actual Smartsheet API token and sheet ID
-        const apiToken = "5FQppMqXPGRcXHet0qrF8kpPid4Dt92dXBlIb";
+        const apiToken = "gHx2bjTESa0Y07yqdkS4avyRHVVtCTxnuIYqD";
         const sheetId = "202878519037828";
 
         // Smartsheet API endpoint for adding rows
@@ -47,11 +47,11 @@
           cells: [
             {
               columnId: GPS_Loc_X,  // Replace with your Latitude column ID
-              value: lat
+              value: latitude
             },
             {
               columnId: GPS_Loc_Y,  // Replace with your Longitude column ID
-              value: lng
+              value: longitude
             }
           ]
         };
