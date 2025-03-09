@@ -46,12 +46,16 @@
           toTop: true,  // Inserts the row at the top of the sheet
           cells: [
             {
+              columnId: PrimaryIdentifier,  // Replace with your Latitude column ID
+              value: "RoundTheWorldin80Ways_API"
+            },
+            {
               columnId: GPS_Loc_X,  // Replace with your Latitude column ID
-              value: latitude
+              value: lat
             },
             {
               columnId: GPS_Loc_Y,  // Replace with your Longitude column ID
-              value: longitude
+              value: lng
             }
           ]
         };
